@@ -3,7 +3,7 @@
 
 pkgname=('xorg-server-git' 'xorg-server-common-git' 'xorg-server-devel-git' 'xorg-server-xdmx-git'
          'xorg-server-xephyr-git' 'xorg-server-xvfb-git' 'xorg-server-xnest-git')
-pkgver=0
+pkgver=xorg.server.1.15.99.902.97.gdb2e708
 pkgrel=1
 arch=('i686' 'x86_64')
 url="http://xorg.freedesktop.org"
