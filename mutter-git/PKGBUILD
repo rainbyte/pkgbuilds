@@ -1,0 +1,48 @@
+# Maintainer: Alvaro F. García <alvarofernandogarcia@gmail.com>
+
+_pkgname=mutter
+pkgname=$_pkgname-git
+pkgver=3.13.92.14.gee858dc
+pkgrel=1
+pkgdesc="A window manager for GNOME"
+arch=('i686' 'x86_64')
+license=('GPL')
+depends=('clutter' 'dconf' 'gobject-introspection' 'gsettings-desktop-schemas'
+         'libcanberra' 'startup-notification' 'zenity' 'libsm' 'gnome-desktop' 'upower' 'libxkbcommon-x11')
+makedepends=('git' 'intltool' 'gnome-doc-utils' 'libxkbcommon-x11' 'gtk-doc')
+provides=("mutter=3.13.92" "mutter-wayland=3.13.92")
+conflicts=('mutter' 'mutter-wayland')
+replaces=('mutter' 'mutter-wayland')
+url="http://www.gnome.org"
+groups=('gnome')
+options=('!emptydirs')
+install=$_pkgname.install
+source=('mutter::git://github.com/rainbyte/mutter#branch=cursor_size')
+sha256sums=('SKIP')
+
+prepare() {
+  cd "$srcdir/$_pkgname"
+}
+
+pkgver() {
+  cd "$srcdir/$_pkgname"
+  git describe --always | sed 's|-|.|g'
+}
+
+build() {
+  cd "$srcdir/$_pkgname"
+  ./autogen.sh --prefix=/usr --sysconfdir=/etc \
+      --libexecdir=/usr/lib/mutter \
+      --localstatedir=/var --disable-static \
+      --disable-schemas-compile --enable-compile-warnings=minimum
+
+  #https://bugzilla.gnome.org/show_bug.cgi?id=655517
+  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+
+  make
+}
+
+package()  {
+  cd "$srcdir/$_pkgname"
+  make DESTDIR="$pkgdir/" install
+}
